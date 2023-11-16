@@ -1,26 +1,32 @@
-import React, { useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import confetti from 'canvas-confetti'
+import React, { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import confetti from 'canvas-confetti';
+import Chatbox from './Chatbox';
+
 
 function Chat() {
-    const location = useLocation()
-    const navigate = useNavigate()
-    const formData = location.state?.formData
+    const location = useLocation();
+    const navigate = useNavigate();
+    const formData = location.state?.formData;
 
     useEffect(() => {
-        if (formData.name && formData.subject) {
+        if (!formData || !formData.name) {
+            
+            console.error("Erreur: Les données du formulaire ne sont pas valides.");
+            navigate('/');
+        } else {
+            
             confetti({
                 particleCount: 100,
                 spread: 70,
                 origin: { y: 0.6 },
-            })
-        } else {
-            navigate('/')
+            });
         }
-    }, [formData, navigate])
+    }, [formData, navigate]);
 
     if (!formData) {
-        return null
+        
+        return <div>Chargement...</div>;
     }
 
     return (
@@ -33,13 +39,15 @@ function Chat() {
                 <div className="form-floating mb-3">
                     <textarea
                         className="form-control"
-                        placeholder="Pose ta question ici"    
+                        placeholder="Pose ta question ici"
                     ></textarea>
                 </div>
-                <button className='btn  btn-warning rounded-pill' type="submit">Envoyer</button>
+                <button className='btn btn-warning rounded-pill' type="submit">Envoyer</button>
             </form>
+
+            <Chatbox />
         </main>
-    )
+    );
 }
 
-export default Chat
+export default Chat;
